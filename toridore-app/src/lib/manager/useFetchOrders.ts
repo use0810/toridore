@@ -10,7 +10,8 @@ export function useFetchOrders(storeId: string) {
     const { data, error } = await supabase
       .from('order_details_view')
       .select('*')
-      .eq('store_id', storeId);
+      .eq('store_id', storeId)
+      .in('status', ['pending', 'completed']);
 
     if (error) {
       console.error('❌ 注文の取得に失敗:', error.message);

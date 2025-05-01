@@ -45,7 +45,7 @@ useEffect(() => {
   if (storeId) {
     fetchAllOrders(); // storeId が使えるようになったら初回データを取得
   }
-}, [storeId]);
+}, [storeId, fetchAllOrders]);
 
   // 注文を完了にする関数
   const markAsCompleted = async (orderId: number) => {
