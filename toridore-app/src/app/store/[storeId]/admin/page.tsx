@@ -10,15 +10,15 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       // 今日の注文数
-      const { data: orderData, error: orderError } = await supabase
+      const { count, error: orderError } = await supabase
         .from('orders')
-        .select('id', { count: 'exact', head: true })
-        .eq('order_date', new Date().toISOString().slice(0, 10)); // YYYY-MM-DD
+        .select('id', { count: 'exact' })
+        .eq('order_date', new Date().toISOString().slice(0, 10));
 
       if (orderError) {
         console.error('注文数取得エラー:', orderError);
       } else {
-        setTodayOrderCount(orderData?.length ?? 0);
+        setTodayOrderCount(count ?? 0);
       }
 
       // 今月の売上
