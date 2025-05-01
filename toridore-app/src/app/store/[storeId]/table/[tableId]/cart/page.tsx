@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import supabase from '@/lib/supabase';
 import Modal from '@/components/Modal';
 import Toast from '@/components/Toast';
-import { useCartStore } from '@/lib/customer/store/cartStore';
 import { submitOrder } from '@/lib/customer/actions/submitOrder';
+import { useCartStore } from '@/lib/customer/store/cartStore';
+import supabase from '@/lib/supabase';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 type MenuItem = {
   id: string;
@@ -43,13 +43,6 @@ export default function CartPage() {
 
   useEffect(() => {
     const fetchStoreAndMenus = async () => {
-
-      const { data: debugData } = await supabase
-  .from('tables')
-  .select('*');
-
-console.log('🧪 tables:', debugData);
-console.log('🔍 tableId:', tableId);
       const { data: table, error: tableError } = await supabase
         .from('tables')
         .select('store_id')
@@ -171,6 +164,13 @@ console.log('🔍 tableId:', tableId);
             if (success) {
               clearCart();
               showToast('注文が完了しました！', 'success');
+              
+              // テーブルの状態を「occupied」に更新
+              await supabase
+              .from('tables')
+              .update({ status: 'occupied' })
+              .eq('id', tableId);
+
               setTimeout(() => {
                 router.push(`/store/${storeId}/table/${tableId}/order`);
               }, 2000);
